@@ -43,15 +43,16 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Contact> contactList;
     private MyContactAdapter adapter;
-    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         /**
          * Array List for Binding Data from JSON to this List
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Snackbar.make(parentView, contactList.get(position).getName() + " => " + contactList.get(position).getPhone().getHome(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(parentView, contactList.get(position).getName()+" ," + contactList.get(position).getEmail() + " => " + contactList.get(position).getPhone().getHome(), Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -87,60 +88,58 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * Checking Internet Connection
                  */
-                if (cm.getActiveNetworkInfo() != null) {
-                    if (InternetConnection.checkConnection(getApplicationContext())) {
-                        final ProgressDialog dialog;
-                        /**
-                         * Progress Dialog for User Interaction
-                         */
-                        dialog = new ProgressDialog(MainActivity.this);
-                        dialog.setTitle(getString(R.string.string_getting_json_title));
-                        dialog.setMessage(getString(R.string.string_getting_json_message));
-                        dialog.show();
+                if (InternetConnection.checkConnection(getApplicationContext())) {
+                    final ProgressDialog dialog;
+                    /**
+                     * Progress Dialog for User Interaction
+                     */
+                    dialog = new ProgressDialog(MainActivity.this);
+                    dialog.setTitle(getString(R.string.string_getting_json_title));
+                    dialog.setMessage(getString(R.string.string_getting_json_message));
+                    dialog.show();
 
-                        //Creating an object of our api interface
-                        GitHubService api = RetroClient.getApiService();
+                    //Creating an object of our api interface
+                    GitHubService api = RetroClient.getApiService();
 
-                        /**
-                         * Calling JSON
-                         */
-                        Call<Contributor> call = api.getMyJSON();
+                    /**
+                     * Calling JSON
+                     */
+                    Call<Contributor> call = api.getMyJSON();
 
-                        /**
-                         * Enqueue Callback will be call when get response...
-                         */
-                        call.enqueue(new Callback<Contributor>() {
-                            @Override
-                            public void onResponse(Call<Contributor> call, Response<Contributor> response) {
-                                //Dismiss Dialog
-                                dialog.dismiss();
+                    /**
+                     * Enqueue Callback will be call when get response...
+                     */
+                    call.enqueue(new Callback<Contributor>() {
+                        @Override
+                        public void onResponse(Call<Contributor> call, Response<Contributor> response) {
+                            //Dismiss Dialog
+                            dialog.dismiss();
 
-                                if (response.isSuccessful()) {
-                                    /**
-                                     * Got Successfully
-                                     */
-                                    contactList = response.body().getContacts();
+                            if(response.isSuccessful()) {
+                                /**
+                                 * Got Successfully
+                                 */
+                                contactList = response.body().getContacts();
 
-                                    /**
-                                     * Binding that List to Adapter
-                                     */
-                                    adapter = new MyContactAdapter(MainActivity.this, contactList);
-                                    listView.setAdapter(adapter);
+                                /**
+                                 * Binding that List to Adapter
+                                 */
+                                adapter = new MyContactAdapter(MainActivity.this, contactList);
+                                listView.setAdapter(adapter);
 
-                                } else {
-                                    Snackbar.make(parentView, R.string.string_some_thing_wrong, Snackbar.LENGTH_LONG).show();
-                                }
+                            } else {
+                                Snackbar.make(parentView, R.string.string_some_thing_wrong, Snackbar.LENGTH_LONG).show();
                             }
+                        }
 
-                            @Override
-                            public void onFailure(Call<Contributor> call, Throwable t) {
-                                dialog.dismiss();
-                            }
-                        });
+                        @Override
+                        public void onFailure(Call<Contributor> call, Throwable t) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                    } else {
-                        Snackbar.make(parentView, R.string.string_internet_connection_not_available, Snackbar.LENGTH_LONG).show();
-                    }
+                } else {
+                    Snackbar.make(parentView, R.string.string_internet_connection_not_available, Snackbar.LENGTH_LONG).show();
                 }
             }
         });

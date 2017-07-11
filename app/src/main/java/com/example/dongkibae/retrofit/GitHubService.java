@@ -1,12 +1,18 @@
 package com.example.dongkibae.retrofit;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by dongkibae on 2017. 6. 27..
@@ -24,13 +30,12 @@ public interface GitHubService {
 //            .build();
 
 
-    // GET/POST/DELETE/PUT 메소드들을 인터페이스에 구현하여 사용할 수 있다.
-    @GET("/repos/{owner}/{repo}/contributors")
-    // JSON Array를 리턴하므로 List<>가 되었다
-    Call<List<Contributor>> contributors(
-            // param 값으로 들어가는 것들이다
-            @Path("owner") String owner,
-            @Path("repo") String repo);
+    /*
+      Retrofit get annotation with our URL
+      And our method that will return us the List of ContactList
+      */
+    @GET("/json_data.json")
+    Call<Contributor> getMyJSON();
 
 
 

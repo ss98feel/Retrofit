@@ -1,5 +1,13 @@
 package com.example.dongkibae.retrofit;
 
+import android.content.ClipData;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by dongkibae on 2017. 6. 27..
  */
@@ -17,15 +25,25 @@ public class Contributor {
 //    }
 
 
-    // login 정보를 받아올 것이므로
 
-    String login;
+    @SerializedName("contacts")
+    @Expose
+    private ArrayList<Contact> contacts = new ArrayList<>();
 
-
-
-    public Contributor(String login) {
-        this.login = login;
+    /**
+     * @return The contacts
+     */
+    public ArrayList<Contact> getContacts() {
+        return contacts;
     }
+
+    /**
+     * @param contacts The contacts
+     */
+    public void setContacts(ArrayList<Contact> contacts) {
+        this.contacts = contacts;
+    }
+
 
 
 
